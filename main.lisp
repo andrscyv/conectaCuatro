@@ -56,12 +56,12 @@
 
 (setq tablero (make-array '(6 7)))
 (setq tableroP (make-array '(6 7) :initial-contents 
-	'((nil nil nil nil nil nil nil)
-	  (nil nil r nil nil nil nil)
-	  (nil nil r r nil nil nil)
-	  (nil nil r r nil nil nil)
+	'((nil nil r r nil nil nil)
 	  (nil nil r a nil nil nil)
-	  (nil nil a r nil nil nil))))
+	  (nil nil r r nil nil nil)
+	  (nil nil r r nil nil nil)
+	  (nil nil a a nil nil nil)
+	  (nil nil nil r nil nil nil))))
 
 (defun inserta (tablero col ficha)
 	(insertaFicha tablero col ficha 0))
@@ -99,12 +99,40 @@
 ;(print (renglonPrimerFicha tablero 2 5))
 
 ;;FALTA PROBAR
-(defun esTerminalC (tablero col ficha )
-	(let ((ren (renglon tablero col)) (esTerminal nil) (j 0)
+(defun esTerminalColumna (tablero col ficha )
+	(let ((ren 5) (esTerminal nil) (j 0)
 		(act nil) (descartado nil) (cont 0) (i 0) ) 
 		(loop 
 			(when esTerminal (return esTerminal))
 			(when (< ren 3) (return nil))
+			(setq j 0)
+			(setq descartado nil)
+			(setq cont 0)
+			(loop
+				(when (> j 3) (return))
+				(setq i (- ren j) )
+				(setq act (aref tablero i col))
+				;;(print act)
+				(when (or esTerminal (< i 0)  descartado )
+					(return))
+				(cond
+					((or (not (equal act ficha)) (null act) ) (setq descartado T))
+					(T (incf cont)))
+				(setq esTerminal (equal cont 4))
+				(incf j))
+			(decf ren))))
+;(print tableroP)
+;(print 'resTerminal)
+;(print (esTerminalColumna tableroP 3 'r))
+
+;;Busca en una col el numero de veces que hay numFichas
+;;en cuatro celdas adyacentes sin fichas del oponente entre
+;ellas
+(defun buscaNCol (tablero col ficha numFichas)
+	(let ((ren 5)  (j 0)
+		(act nil) (descartado nil) (cont 0) (i 0) (res 0) ) 
+		(loop 
+			(when (< ren 3) (return res))
 			(setq j 0)
 			(setq descartado nil)
 			(setq cont 0)
@@ -121,15 +149,8 @@
 				(incf j))
 			(decf ren))))
 
-(print tableroP)
-(print 'resTerminal)
-(print (esTerminalC tableroP 2 'r))
 
 
-(defun esTerminalColumna (tablero col ficha)
-	(setq auxEsTermCol (renglon tablero col))
-	()
-	(esTerminalC tablero col ficha ))
 
 
 
