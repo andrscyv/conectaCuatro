@@ -55,26 +55,17 @@
 ;;===============================================
 
 (setq tablero (make-array '(6 7)))
+(setq tableroP (make-array '(6 7) :initial-contents 
+	'((nil nil nil nil nil nil nil)
+	  (nil nil r nil nil nil nil)
+	  (nil nil r r nil nil nil)
+	  (nil nil r r nil nil nil)
+	  (nil nil r a nil nil nil)
+	  (nil nil a r nil nil nil))))
 
-(defun imprimeTablero (tablero)
-	(cond
-		((null tablero))
-		(T (print (car tablero)) (imprimeTablero (cdr tablero)))))
-;(imprimeTablero tablero)
+(defun inserta (tablero col ficha)
+	(insertaFicha tablero col ficha 0))
 
-;Dada una columna (lst) inserta en el primer
-;espacio vacio (0). Si no puede no modifica 
-;la columna
-(defun insertaEnPrimerVacio (lst ficha)
-	(cond
-		((null lst))
-		((equal (car lst) 0) (setf (car lst) ficha))
-		(T (insertaEnPrimerVacio (cdr lst) ficha))))
-
-;(setq p '(r r r r r 0) )
-;(print p)
-;(insertaEnPrimerVacio p 'a)
-;(print p)
 (defun insertaFicha ( m col ficha i)
 	(cond
 		((> i 5) nil)
@@ -91,12 +82,56 @@
 	(insertaFicha (caddr  nodo) i ficha  0)
 	)
 
-(defun indicePrimerFicha (tablero col j)
+(defun renglon (tablero col)
+	(renglonPrimerFicha tablero col 5))
+(defun renglonPrimerFicha (tablero col j)
 	(cond 
-		((> j 5) nil)
-		()))
-(defun checaColT (tablero i)
-	())
+		((< j 0) nil)
+		((null (aref tablero j col)) (renglonPrimerFicha tablero col (- j 1)))
+		(T j)))
+;(insertaFicha tablero 2 'r 0)
+;(insertaFicha tablero 2 'r 0)
+;(insertaFicha tablero 2 'r 0)
+;(insertaFicha tablero 2 'r 0)
+;(insertaFicha tablero 2 'r 0)
+;(insertaFicha tablero 2 'r 0)
+;(print tablero)
+;(print (renglonPrimerFicha tablero 2 5))
+
+;;FALTA PROBAR
+(defun esTerminalC (tablero col ficha )
+	(let ((ren (renglon tablero col)) (esTerminal nil) (j 0)
+		(act nil) (descartado nil) (cont 0) (i 0) ) 
+		(loop 
+			(when esTerminal (return esTerminal))
+			(when (< ren 3) (return nil))
+			(setq j 0)
+			(setq descartado nil)
+			(setq cont 0)
+			(loop
+				(setq i (- ren j) )
+				(setq act (aref tablero i col))
+				;;(print act)
+				(when (or esTerminal (< i 0)  descartado )
+					(return))
+				(cond
+					((or (not (equal act ficha)) (null act) ) (setq descartado T))
+					(T (incf cont)))
+				(setq esTerminal (equal cont 4))
+				(incf j))
+			(decf ren))))
+
+(print tableroP)
+(print 'resTerminal)
+(print (esTerminalC tableroP 2 'r))
+
+
+(defun esTerminalColumna (tablero col ficha)
+	(setq auxEsTermCol (renglon tablero col))
+	()
+	(esTerminalC tablero col ficha ))
+
+
 
 (setq sigMov nil)
 (setq mInfinto -1)
