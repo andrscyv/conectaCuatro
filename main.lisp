@@ -55,13 +55,14 @@
 ;;===============================================
 
 (setq tablero (make-array '(6 7)))
+(setq diag nil)
 (setq tableroP (make-array '(6 7) :initial-contents 
-	'((nil nil r   r   nil r   nil)
-	  (nil r   a   a   r   nil nil)
-	  (nil  r  a   r   r   nil nil)
-	  (r   nil r   r   nil nil nil)
-	  (nil nil a   a   r nil nil)
-	  (nil nil nil r   r   r   nil))))
+	'((r   a   r   r   a   a   nil)
+	  (nil r   a   r   r   a   nil)
+	  (nil a   r   r   r   r   nil)
+	  (nil nil r   a   r   nil nil)
+	  (nil nil a   nil a   nil nil)
+	  (nil nil nil nil r   nil nil))))
 
 (defun inserta (tablero col ficha)
 	(insertaFicha tablero col ficha 0))
@@ -75,6 +76,11 @@
 ;(print tablero)
 ;(print (insertaFicha tablero 6 'r 0))
 ;(print tablero)
+
+
+
+
+
 
 ;;Inserta ficha en i-esima columna
 ;;Nodo es un tablero
@@ -216,7 +222,7 @@
 			(incf col)
 			(incf ren))))
 ; (print tableroP)
-; (setq ren 0)
+; (setq ren 3)
 ; (setq col 0)
 ; (print 'buscaNDiagCres)
 ; (print `(,ren ,col))
@@ -251,12 +257,28 @@
 			(when (and (not termina) (= cont numFichas)) (incf res))
 			(incf col)
 			(decf ren))))
-(print tableroP)
-(setq ren 5)
-(setq col 0)
-(print 'buscaNDiagDec)
-(print `(,ren ,col))
-(print (buscaNDiagDec tableroP ren col 'r 4))
+; (print tableroP)
+; (setq ren 5)
+; (setq col 0)
+; (print 'buscaNDiagDec)
+; (print `(,ren ,col))
+; (print (buscaNDiagDec tableroP ren col 'r 4))
+
+;col es la columna donde se hizo la ultima 
+; inserción
+(defun esTerminalTablero (tablero col ficha)
+	(let ((res 0) (ren (renglon tablero col)) (m -1)) 
+		(setq res (+ res (buscaNCol tablero col ficha 4)))
+		(setq res (+ res (buscaNRen tablero ren ficha 4)))
+		(setq m (min col ren))
+		(setq res (+ res (buscaNDiagCres tablero (- ren m) (- col m) ficha 4 )))
+		(setq m (min col (- 5 ren)))
+		(setq res (+ res (buscaNDiagDec tablero (+ ren m) (- col m) ficha 4)))
+		(> res 0)))
+; (print tableroP)
+; (setq col 5)
+; (print col)
+; (print (esTerminalTablero tableroP col 'r))
 
 (setq sigMov nil)
 (setq mInfinto -1)
