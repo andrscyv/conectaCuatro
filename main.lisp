@@ -58,9 +58,9 @@
 (setq tableroP (make-array '(6 7) :initial-contents 
 	'((nil nil r r nil nil nil)
 	  (nil nil r a nil nil nil)
-	  (nil nil r r nil nil nil)
-	  (nil nil r r nil nil nil)
-	  (nil nil a a nil nil nil)
+	  (nil r r r r nil nil)
+	  (nil nil nil r nil nil nil)
+	  (nil nil a nil nil nil nil)
 	  (nil nil nil r nil nil nil))))
 
 (defun inserta (tablero col ficha)
@@ -137,20 +137,54 @@
 			(setq descartado nil)
 			(setq cont 0)
 			(loop
+				(when (> j 3) (return))
 				(setq i (- ren j) )
 				(setq act (aref tablero i col))
-				;;(print act)
-				(when (or esTerminal (< i 0)  descartado )
+				;(print act)
+				;(print i)
+				(when (or (> j 3) (< i 0)  descartado )
 					(return))
 				(cond
-					((or (not (equal act ficha)) (null act) ) (setq descartado T))
+					((null act))
+					(( not (equal act ficha) ) (setq descartado T))
 					(T (incf cont)))
-				(setq esTerminal (equal cont 4))
 				(incf j))
+			(when (>= cont numFichas) (incf res))
 			(decf ren))))
+; (print tableroP)
+; (setq col 3)
+; (print 'buscaNCol)
+; (print col)
+; (print (buscaNCol tableroP col 'r 4))
 
+(defun buscaNRen (tablero ren ficha numFichas)
+	(let ((col 0)  (j 0)
+		(act nil) (descartado nil) (cont 0) (i 0) (res 0) ) 
+		(loop 
+			(when (> col 3) (return res))
+			(setq j 0)
+			(setq descartado nil)
+			(setq cont 0)
+			(loop
+				(when (> j 3) (return))
+				(setq i (+ col j) )
+				(setq act (aref tablero ren i))
+				;(print act)
+				(when (or (> j 3) (> i 6)  descartado )
+					(return))
+				(cond
+					((null act))
+					(( not (equal act ficha) ) (setq descartado T))
+					(T (incf cont)))
+				(incf j))
+			(when (>= cont numFichas) (incf res))
+			(incf col))))
 
-
+; (print tableroP)
+; (setq ren 2)
+; (print 'buscaNRen)
+; (print ren)
+; (print (buscaNRen tableroP ren 'r 3))
 
 
 
