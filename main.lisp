@@ -1,3 +1,13 @@
+;;VARIBLES GLOBALES
+(setq sigMov nil)
+(setq mInfinto -1)
+(setq infinito 15)
+(setq numMax 3)
+(setq arbol2 nil)
+(setq depth 5)
+(setq fichaYo 'r)
+(setq fichaOp 'a)
+
 ;;===============================================
 ;;==============Prueba===========================
 ;;===============================================
@@ -267,7 +277,7 @@
 
 ;col es la columna donde se hizo la ultima 
 ; inserción
-(defun esTerminalTablero (tablero col ficha)
+(defun esTerminal(tablero col ficha)
 	(let ((res 0) (ren (renglon tablero col)) (m -1)) 
 		(setq res (+ res (buscaNCol tablero col ficha 4)))
 		(setq res (+ res (buscaNRen tablero ren ficha 4)))
@@ -279,7 +289,7 @@
 ; (print tableroP)
 ; (setq col 5)
 ; (print col)
-; (print (esTerminalTablero tableroP col 'r))
+; (print (esTerminal tableroP col 'r))
 
 (defun heuristicaCol (tablero ficha numFichas)
 	(let ((i 0) (res 0) (aux 0))
@@ -316,22 +326,29 @@
 
 (defun heuristicaDiagDec (tablero ficha numFichas)
 	(let ((diagD '((3 0) (4 0) (5 0) (5 1) (5 2) (5 3))))
-		;(apply '+ 
-			(mapcar (lambda (parOrd) 
-					(buscaNDiagDec tablero (car parOrd) (cadr parOrd) ficha numFichas)) diagD)));)
-(print (heuristicaDiagDec tableroP 'r 2))
+		(apply '+ (mapcar (lambda (parOrd) 
+			(buscaNDiagDec tablero (car parOrd) (cadr parOrd) ficha numFichas)) diagD))))
+;(print (heuristicaDiagDec tableroP 'r 2))
 
 (defun heuristica (nodo)
 	(cond
-		((car nodo) mInfinto)
-		(T )))
+		((car nodo)
+			(cond
+				((equal fichaYo (cadr nodo)) infinito)
+				(T mInfinto)))
+		(T (let ((res 0) (tablero (caddr nodo)))
+			(setq res (+ res (heuristicaCol tablero fichaYo 3)))
+			(setq res (+ res (heuristicaRen tablero fichaYo 3)))
+			(setq res (+ res (heuristicaDiagCres tablero fichaYo 3)))
+			(setq res (+ res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
+			res))))
+;(print (heuristica (list nil 'r tableroP)))
 
-(setq sigMov nil)
-(setq mInfinto -1)
-(setq infinito 15)
-(setq numMax 3)
-(setq arbol2 nil)
-(setq depth 5)
+
 
 (DEFUN ENCUENTRANODO (IDNODO LISTA)
     (COND
