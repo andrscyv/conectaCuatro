@@ -1,10 +1,10 @@
 ;;VARIBLES GLOBALES
 (setq sigMov nil)
-(setq mInfinto -10000)
-(setq infinito 10000)
+(setq mInfinto -1000000)
+(setq infinito  1000000)
 (setq numMax 6)
 (setq arbol2 nil)
-(setq depth 5)
+
 (setq fichaYo 'r)
 (setq fichaOp 'a)
 
@@ -84,6 +84,28 @@
 	  (nil nil nil r   a   nil nil)
 	  (nil nil nil nil r   nil nil))))
 
+ (defun copy-array (array)
+ (let ((dims (array-dimensions array)))
+   (adjust-array
+    (make-array dims :displaced-to array)
+    dims)))
+
+; (defun copy-array (arr)
+; 	(let ((dims (array-dimensions arr)) (res nil) (col 0)
+; 		(ren 0) (colF 0) (renF 0))
+; 		(setq renF (car dims))
+; 		(setq colF (cadr dims))
+; 		(setq res (make-array dims))
+; 		(loop 
+; 			;(print ren)
+; 			(when (<= renF ren) (return res))
+; 			(setq col 0)
+; 			(loop
+; 				(when (<= colF col) (return))
+; 				(setf (aref res ren col) (aref arr ren col))
+; 				(incf col))
+; 			(incf ren))))
+;(print (copy-array tableroP))
 
 (defun inserta (tablero col ficha)
 	(insertaFicha tablero col ficha 0))
@@ -352,15 +374,24 @@
 			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
 			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
 			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (+ res (heuristicaCol tablero fichaYo 2)))
+			(setq res (+ res (heuristicaRen tablero fichaYo 2)))
+			(setq res (+ res (heuristicaDiagCres tablero fichaYo 2)))
+			(setq res (+ res (heuristicaDiagDec tablero fichaOp 2)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
 			res))))
 ;(print (heuristica (list nil 'r tableroP)))
 
 ;;Inserta ficha en i-esima columna
 ;;Nodo es un tablero
 (defun generaMov (nodo i ficha)
-	(cond
-		((null (insertaFicha (caddr  nodo) i ficha  0)) nil)
-		(T (list (esTerminalTablero (caddr nodo) i ficha) ficha (caddr nodo))))
+	(let ((nuevoTab (copy-array (caddr nodo)))) 
+		(cond
+			((null (insertaFicha nuevoTab i ficha  0)) nil)
+			(T (list (esTerminalTablero nuevoTab i ficha) ficha nuevoTab))))
 	)
 ;(print (generaMov (list nil 'r  tableroP) 0 'a))
 (defun esTerminal (nodo)
@@ -371,46 +402,101 @@
 
 (defun alphaBeta (nodo prof a b esMax)
 	(cond
-		((or (= prof 0) (esTerminal nodo)) (heuristica nodo))
+		((or (= prof 0) (esTerminal nodo)) 
+			(let ((h (heuristica nodo))) 
+				;(print (list 'esTerminal h nodo))
+				 h))
 		(esMax
 			(let ((v mInfinto) (i 0) (act nil) (aux nil))
 				(loop ;(print v)
-					(setq act (generaMov nodo i fichaYo))
-					(print act)
 					(when (or (> i numMax) (<= b a)) (return v))
+					(setq act (generaMov nodo i fichaYo))
+					;(print act)
+					
 					(cond
 						((null act))
-						(T (setq aux (alphaBeta act (- prof 1) a b nil)) 
-						 (when (< v aux) (setq sigMov act))	(setq v (max v aux)) (setq a (max a v))
-						 (push act arbol2)))
+						(T  (setq aux (alphaBeta act (- prof 1) a b nil)) 
+						 ;(when (and (< v aux) (equal prof depth)) (setq sigMov act))	
+							(setq v (max v aux)) (setq a (max a v))
+						 	(when (equal prof depth) (push (list aux i) sigMov))
+							;(print (list (caddr nodo) aux i act))
+							 ;(print '----------)
+							 ;(print '----------)
+							 ;(print '----------)
+						 ))
 					(incf i))
 				)
 			)
 		(T
-			(let ((v infinito) (i 0) (act nil) )
+			(let ((v infinito) (i 0) (act nil)( aux nil) )
 				(loop
-					(setq act (generaMov nodo i fichaOp))
-					(print act)
 					(when (or (> i numMax) (<= b a)) (return v))
+					(setq act (generaMov nodo i fichaOp))
+					;(print act)
+					
 					(cond
-						((null act))
-						(T (setq v (min v (alphaBeta act (- prof 1) a b T))) 
-							(setq b (min b v)) (push act arbol2)))
+						((null act) )
+						(T 
+							(setq aux (alphaBeta act (- prof 1) a b T))
+
+								(setq v (min v aux)) 
+								(setq b (min b v))
+								;(print 'b)
+							    ;(print b)
+								;(when (equal prof (- depth 1)) (push (list aux i act) sigMin)) 
+								;(print  (list (caddr nodo) aux i act))
+								 ;(print '----------)
+								 ;(print '----------)
+								 ;(print '----------)
+								 ))
 					(incf i))))))
 ;Prueba
 ; (print (alphaBeta '(1 -1 2 3 4) depth mInfinto infinito t ))
 ; (print arbol2)
 
+(defun dameRes (maxim lst)
+	 (cond
+	 	((equal (car (car lst)) maxim) (cadar lst))
+	 	(T (dameRes maxim (cdr lst)))))
 ;Conecta Cuatro
+(setq sigMin nil)
+(setq depth 4)
 (setq tableroIni (make-array '(6 7) :initial-contents 
-	'((nil nil nil nil nil nil nil)
-	  (nil nil nil nil nil nil nil)
-	  (nil nil nil nil nil nil nil)
-	  (nil nil nil nil nil nil nil)
-	  (nil nil nil nil nil nil nil)
-	  (nil nil nil nil nil nil nil))))
+	'((r   r  r   a   a   nil nil)
+	  (r   nil a   a   a   nil nil)
+	  (r   nil a   r   r   nil nil)
+	  (a   nil nil a   nil nil nil)
+	  (r   nil nil nil nil nil nil)
+	  (r   nil nil nil nil nil nil))))
 
- (print (alphaBeta (list nil fichaYo tableroIni) 2 mInfinto infinito t ))
+
+; (setq tableroIni (make-array '(6 7) :initial-contents 
+; 	'((nil nil nil nil nil nil nil)
+; 	  (nil nil nil nil nil nil nil)
+; 	  (nil nil nil nil nil nil nil)
+; 	  (nil nil nil nil nil nil nil)
+; 	  (nil nil nil nil nil nil nil)
+; 	  (nil nil nil nil nil nil nil))))
+
+
+;(print (heuristica (list nil 'a tableroIni)))
+;(print (generaMov (list nil 'a tableroIni) 4 'r))
+(print (dameRes (alphaBeta (list nil fichaYo tableroIni) depth mInfinto infinito t ) (reverse sigMov)))
+(print sigMov)
+ ;(print (alphaBeta (list nil fichaOp aux) (- depth 1) 0 infinito nil ))
+ ; (print '----------)
+ ; (print '----------)
+ ; (print '----------)
+ ;(print 'mov)
+ ;(print sigMov)
+ ;  (print '----------)
+ ; (print '----------)
+ ; (print '----------)
+ ;(print (alphaBeta (generaMov (list nil fichaYo tableroIni) 5 fichaYo) (- depth 1) mInfinto infinito nil))
+ ;(print 'mini)
+ ;(print sigMin)
+
  ;(print arbol2)
+
 
 
