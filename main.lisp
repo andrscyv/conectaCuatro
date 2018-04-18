@@ -1,9 +1,10 @@
 ;;VARIBLES GLOBALES
+(load 'matriz.txt)
 (setq sigMov nil)
 (setq mInfinto -1000000)
 (setq infinito  1000000)
 (setq numMax 6)
-(setq arbol2 nil)
+;(setq arbol2 nil)
 
 (setq fichaYo 'r)
 (setq fichaOp 'a)
@@ -74,15 +75,15 @@
 ;;================MetodosConecta=================
 ;;===============================================
 
-(setq tablero (make-array '(6 7)))
+;(setq tablero (make-array '(6 7)))
 (setq diag nil)
-(setq tableroP (make-array '(6 7) :initial-contents 
-	'((r   a   r   r   a   a   nil)
-	  (nil r   a   r   r   a   nil)
-	  (nil r   a   r   r   nil nil)
-	  (nil r   r   a   r   nil nil)
-	  (nil nil nil r   a   nil nil)
-	  (nil nil nil nil r   nil nil))))
+; (setq tableroP (make-array '(6 7) :initial-contents 
+; 	'((r   a   r   r   a   a   nil)
+; 	  (nil r   a   r   r   a   nil)
+; 	  (nil r   a   r   r   nil nil)
+; 	  (nil r   r   a   r   nil nil)
+; 	  (nil nil nil r   a   nil nil)
+; 	  (nil nil nil nil r   nil nil))))
 
  (defun copy-array (array)
  (let ((dims (array-dimensions array)))
@@ -460,14 +461,14 @@
 	 	(T (dameRes maxim (cdr lst)))))
 ;Conecta Cuatro
 (setq sigMin nil)
-(setq depth 4)
-(setq tableroIni (make-array '(6 7) :initial-contents 
-	'((r   r  r   a   a   nil nil)
-	  (r   nil a   a   a   nil nil)
-	  (r   nil a   r   r   nil nil)
-	  (a   nil nil a   nil nil nil)
-	  (r   nil nil nil nil nil nil)
-	  (r   nil nil nil nil nil nil))))
+; (setq depth 4)
+; (setq tableroIni (make-array '(6 7) :initial-contents 
+; 	'((r   r  r   a   a   nil nil)
+; 	  (r   nil a   a   a   nil nil)
+; 	  (r   nil a   r   r   nil nil)
+; 	  (a   nil nil a   nil nil nil)
+; 	  (r   nil nil nil nil nil nil)
+; 	  (r   nil nil nil nil nil nil))))
 
 
 ; (setq tableroIni (make-array '(6 7) :initial-contents 
@@ -481,8 +482,15 @@
 
 ;(print (heuristica (list nil 'a tableroIni)))
 ;(print (generaMov (list nil 'a tableroIni) 4 'r))
+
+;;ESTE ES LA LLAMADA IMPORTANTE
 (print (dameRes (alphaBeta (list nil fichaYo tableroIni) depth mInfinto infinito t ) (reverse sigMov)))
-(print sigMov)
+
+
+;(print sigMov)
+
+
+
  ;(print (alphaBeta (list nil fichaOp aux) (- depth 1) 0 infinito nil ))
  ; (print '----------)
  ; (print '----------)
