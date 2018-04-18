@@ -1,5 +1,5 @@
 ;;VARIBLES GLOBALES
-;(load 'matriz.txt)
+; (load 'matriz.txt)
 (setq sigMov nil)
 (setq mInfinto -1000000)
 (setq infinito  1000000)
@@ -77,13 +77,13 @@
 
 ;(setq tablero (make-array '(6 7)))
 (setq diag nil)
-(setq tableroP (make-array '(6 7) :initial-contents 
-	'((r   a   r   r   a   a   nil)
-	  (nil r   a   r   r   a   nil)
-	  (nil r   a   r   r   nil nil)
-	  (nil r   r   a   r   nil nil)
-	  (nil nil nil r   a   nil nil)
-	  (nil nil nil nil r   nil nil))))
+; (setq tableroP (make-array '(6 7) :initial-contents 
+; 	'((r   a   r   r   a   a   nil)
+; 	  (nil r   a   r   r   a   nil)
+; 	  (nil r   a   r   r   nil nil)
+; 	  (nil r   r   a   r   nil nil)
+; 	  (nil nil nil r   a   nil nil)
+; 	  (nil nil nil nil r   nil nil))))
 
  (defun copy-array (array)
  (let ((dims (array-dimensions array)))
@@ -542,15 +542,15 @@
 	 	((equal (car (car lst)) maxim) (cadar lst))
 	 	(T (dameRes maxim (cdr lst)))))
 ;Conecta Cuatro
-(setq sigMin nil)
- (setq depth 4)
-(setq tableroIni (make-array '(6 7) :initial-contents 
-	'((a   nil r   r   a   nil r)
-	  (a   nil a   a   a   nil a)
-	  (r   nil r   r   r   nil r)
-	  (a   nil r   r   a   nil a)
-	  (r   nil r   r   r   nil nil)
-	  (a   nil a   a   a   nil nil))))
+; (setq sigMin nil)
+;  (setq depth 4)
+; (setq tableroIni (make-array '(6 7) :initial-contents 
+; 	'((a   nil r   r   a   nil r)
+; 	  (a   nil a   a   a   nil a)
+; 	  (r   nil r   r   r   nil r)
+; 	  (a   nil r   r   a   nil a)
+; 	  (r   nil r   r   r   nil nil)
+; 	  (a   nil a   a   a   nil nil))))
 
 
 ; (setq tableroIni (make-array '(6 7) :initial-contents 
