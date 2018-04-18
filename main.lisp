@@ -1,5 +1,5 @@
 ;;VARIBLES GLOBALES
-(load 'matriz.txt)
+;(load 'matriz.txt)
 (setq sigMov nil)
 (setq mInfinto -1000000)
 (setq infinito  1000000)
@@ -367,22 +367,22 @@
 				((equal fichaYo (cadr nodo)) infinito)
 				(T mInfinto)))
 		(T (let ((res 0) (tablero (caddr nodo)))
-			(setq res (+ res (heuristicaCol tablero fichaYo 3)))
-			(setq res (+ res (heuristicaRen tablero fichaYo 3)))
+			 (setq res (+ res (heuristicaCol tablero fichaYo 3)))
+			 (setq res (+ res (heuristicaRen tablero fichaYo 3)))
 			(setq res (+ res (heuristicaDiagCres tablero fichaYo 3)))
 			(setq res (+ res (heuristicaDiagDec tablero fichaOp 3)))
+			(setq res (- res (heuristicaCol tablero fichaOp 3)))
+			 (setq res (- res (heuristicaRen tablero fichaOp 3)))
+			(setq res (- res (heuristicaDiagCres tablero fichaOp 3)))
 			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 3)))
-			(setq res (+ res (heuristicaCol tablero fichaYo 2)))
-			(setq res (+ res (heuristicaRen tablero fichaYo 2)))
-			(setq res (+ res (heuristicaDiagCres tablero fichaYo 2)))
-			(setq res (+ res (heuristicaDiagDec tablero fichaOp 2)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
-			(setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			; (setq res (+ res (heuristicaCol tablero fichaYo 2)))
+			; (setq res (+ res (heuristicaRen tablero fichaYo 2)))
+			; (setq res (+ res (heuristicaDiagCres tablero fichaYo 2)))
+			; (setq res (+ res (heuristicaDiagDec tablero fichaOp 2)))
+			; (setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			; (setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			; (setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
+			; (setq res (- res (heuristicaDiagDec tablero fichaOp 2)))
 			res))))
 ;(print (heuristica (list nil 'r tableroP)))
 
@@ -461,14 +461,14 @@
 	 	(T (dameRes maxim (cdr lst)))))
 ;Conecta Cuatro
 (setq sigMin nil)
-; (setq depth 4)
-; (setq tableroIni (make-array '(6 7) :initial-contents 
-; 	'((r   r  r   a   a   nil nil)
-; 	  (r   nil a   a   a   nil nil)
-; 	  (r   nil a   r   r   nil nil)
-; 	  (a   nil nil a   nil nil nil)
-; 	  (r   nil nil nil nil nil nil)
-; 	  (r   nil nil nil nil nil nil))))
+ (setq depth 4)
+(setq tableroIni (make-array '(6 7) :initial-contents 
+	'((r   r   a   a   a   r   nil)
+	  (r   nil r   a   a   a   nil)
+	  (r   nil a   r   r   a   nil)
+	  (a   nil nil nil r   nil nil)
+	  (r   nil nil nil nil nil nil)
+	  (nil nil nil nil nil nil nil))))
 
 
 ; (setq tableroIni (make-array '(6 7) :initial-contents 
@@ -487,7 +487,7 @@
 (print (dameRes (alphaBeta (list nil fichaYo tableroIni) depth mInfinto infinito t ) (reverse sigMov)))
 
 
-;(print sigMov)
+(print sigMov)
 
 
 
